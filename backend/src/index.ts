@@ -1,8 +1,8 @@
 import 'reflect-metadata'; // Essential for TypeORM decorators
 import express from 'express';
-import { createUser, getUsers } from './controllers/userController.ts';
 import { AppDataSource } from './dataSource';
-import { createTodo, getTodosByDate } from './controllers/todoController.ts';
+import userRoutes from './routes/userRoutes';
+import todoRoutes from './routes/todoRoutes';
 
 const app = express();
 const PORT = 5500;
@@ -10,11 +10,8 @@ const PORT = 5500;
 AppDataSource.initialize().then(async () => {
   app.use(express.json());
 
-  app.post('/users', createUser);
-  app.get('/users', getUsers);
-
-  app.post('/todos', createTodo)
-  app.get('/todos/:date', getTodosByDate)
+  app.use('/', userRoutes);
+  app.use('/', todoRoutes);
 
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

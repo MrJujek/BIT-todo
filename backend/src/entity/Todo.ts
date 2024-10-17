@@ -12,6 +12,9 @@ export class Todo {
   @Column()
   task!: string;
 
+  @Column({ default: false })
+  checked!: boolean
+
   @ManyToOne(() => User, (user) => user.todos)
   user!: Relation<User>;
 }
