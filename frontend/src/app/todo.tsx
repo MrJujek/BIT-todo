@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { fetchTodos, createTodo } from '../services/api';
+import { fetchTodos, createTodo, patchTodo } from '../services/api';
+import { Checkbox } from '@nextui-org/react';
 
 interface Todo {
   id: number;
   date: string;
   task: string;
+  checked: boolean;
 }
 
 const TodoList: React.FC = () => {
@@ -29,6 +31,14 @@ const TodoList: React.FC = () => {
     });
   };
 
+  const handleToggleTodo = (id: number, checked: boolean) => {
+    patchTodo(id, checked).then(data => {
+      setTodos(todos.map(todo => (todo.id === id ? data : todo)));
+    }).catch(error => {
+      console.error('Error updating todo:', error);
+    });
+  };
+
   return (
     <div>
       <input
@@ -39,7 +49,15 @@ const TodoList: React.FC = () => {
       <button onClick={handleAddTodo}>Add Todo</button>
       <ul>
         {todos.map(todo => (
-          <li key={todo.id}>{todo.task}</li>
+          <li key={todo.id} style={{ textDecoration: todo.checked ? 'line-through' : 'none' }}>
+            <Checkbox
+              checked={todo.checked}
+              lineThrough
+              onChange={(e) => handleToggleTodo(todo.id, e.target.checked)}
+            >
+              {todo.task}
+            </Checkbox>
+          </li>
         ))}
       </ul>
     </div>

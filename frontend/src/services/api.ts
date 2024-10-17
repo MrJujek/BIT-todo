@@ -21,3 +21,17 @@ export const createTodo = async (todo: { date: string, task: string }) => {
   }
   return response.json();
 };
+
+export const patchTodo = async (id: number, checked: boolean) => {
+  const response = await fetch(`${API_URL}/todos/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ checked }),
+  });
+  if (!response.ok) {
+    throw new Error(`Error updating todo: ${response.statusText}`);
+  }
+  return response.json();
+};
