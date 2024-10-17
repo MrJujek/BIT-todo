@@ -1,6 +1,0 @@
-{
-    "watch": ["src"],
-    "ext": "ts",
-    "exec": "bun run src/index.ts"
-  }
-  
