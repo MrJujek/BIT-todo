@@ -31,7 +31,7 @@ export const patchTodo = async (id: number, checked: boolean) => {
     body: JSON.stringify({ checked }),
   });
   if (!response.ok) {
-    throw new Error(`Error updating todo: ${response.statusText}`);
+    throw new Error(`Error patching todo: ${response.statusText}`);
   }
   return response.json();
 };

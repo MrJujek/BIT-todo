@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchTodos, createTodo, patchTodo } from '../services/api';
 import { Checkbox } from '@nextui-org/react';
+import AddNewTask from '../components/AddNewTask';
 
 interface Todo {
   id: number;
@@ -41,6 +42,7 @@ const TodoList: React.FC = () => {
 
   return (
     <div>
+      <AddNewTask />
       <input
         type="text"
         value={task}
