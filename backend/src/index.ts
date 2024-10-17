@@ -1,12 +1,22 @@
-import express, { type Request, type Response , type Application } from 'express';
+import 'reflect-metadata'; // Essential for TypeORM decorators
+import express from 'express';
+import { createUser, getUsers } from './controllers/userController.ts';
+import { AppDataSource } from './dataSource';
+import { createTodo, getTodosByDate } from './controllers/todoController.ts';
 
-const app: Application = express();
-const port = 5500;
+const app = express();
+const PORT = 5500;
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Welcome to Express & TypeScript Server');
-});
+AppDataSource.initialize().then(async () => {
+  app.use(express.json());
 
-app.listen(port, () => {
-  console.log(`Server is Fire at http://localhost:${port}`);
-});
+  app.post('/users', createUser);
+  app.get('/users', getUsers);
+
+  app.post('/todos', createTodo)
+  app.get('/todos/:date', getTodosByDate)
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}).catch(error => console.log(error));
