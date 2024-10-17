@@ -1,13 +1,13 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './styles/index.css'
-import {NextUIProvider} from "@nextui-org/react";
-import TodoApp from './app/todo.tsx';
+import './app/styles/index.css'
+import { NextUIProvider } from "@nextui-org/react";
+import App from './app/App.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <NextUIProvider>
-      <TodoApp />
+      <App />
     </NextUIProvider>
   </StrictMode>,
 )
