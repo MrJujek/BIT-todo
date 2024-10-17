@@ -1,27 +1,42 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useEffect, useState } from 'react';
+import { fetchTodos, createTodo } from '../services/api';
 
 interface Todo {
   id: number;
+  date: string;
   task: string;
 }
 
-const TodoApp: React.FC = () => {
+const TodoList: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [task, setTask] = useState<string>('');
-  const [idCounter, setIdCounter] = useState<number>(1);
+  const currentDate = new Date().toISOString().split('T')[0];
 
-  const handleTaskChange = (e: ChangeEvent<HTMLInputElement>) => setTask(e.target.value);
+  useEffect(() => {
+    fetchTodos(currentDate).then(data => {
+      setTodos(data);
+    }).catch(error => {
+      console.error('Error fetching todos:', error);
+    });
+  }, [currentDate]);
 
-  const addTodo = () => {
-    setTodos([...todos, { id: idCounter, task }]);
-    setTask('');
-    setIdCounter(idCounter + 1);
+  const handleAddTodo = () => {
+    createTodo({ date: currentDate, task }).then(data => {
+      setTodos([...todos, data]);
+      setTask('');
+    }).catch(error => {
+      console.error('Error creating todo:', error);
+    });
   };
 
   return (
     <div>
-      <input value={task} onChange={handleTaskChange} />
-      <button onClick={addTodo}>Add Todo</button>
+      <input
+        type="text"
+        value={task}
+        onChange={(e) => setTask(e.target.value)}
+      />
+      <button onClick={handleAddTodo}>Add Todo</button>
       <ul>
         {todos.map(todo => (
           <li key={todo.id}>{todo.task}</li>
@@ -31,4 +46,4 @@ const TodoApp: React.FC = () => {
   );
 };
 
-export default TodoApp;
+export default TodoList;

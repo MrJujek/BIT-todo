@@ -8,6 +8,14 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5500',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      }
+    }
   },
   css: {
     postcss: {
