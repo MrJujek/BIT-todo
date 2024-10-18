@@ -52,6 +52,10 @@ const SignUp: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 transition-all duration-300 ease-in-out">
+      <div className="flex flex-col items-center mb-6">
+        <img src="/logo.svg" alt="EasyPlanner Logo" className="w-16 h-16 mb-2" />
+        <h1 className="text-3xl font-bold text-gray-800">EasyPlanner</h1>
+      </div>
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm transition-all duration-300 ease-in-out">
         <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
         <form onSubmit={handleSubmit}>
