@@ -4,7 +4,7 @@ import { EyeFilledIcon } from '../assets/EyeFilledIcon'
 import { EyeSlashFilledIcon } from '../assets/EyeSlashFilledIcon'
 import { loginUser } from '../services/api'
 
-const Login: React.FC = () => {
+const SignIn: React.FC = () => {
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -25,7 +25,7 @@ const Login: React.FC = () => {
 
       console.log('Login successful:', data);
 
-      
+
 
     } catch (error) {
       setInputError(true);
@@ -39,20 +39,28 @@ const Login: React.FC = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         <form onSubmit={handleLogin}>
           <div className="mb-4">
+            <label htmlFor="login" className="block text-sm font-medium text-gray-700">
+              Username or email
+            </label>
             <Input
+              id='login'
               isInvalid={inputError}
               color={inputError ? 'danger' : 'primary'}
               isClearable
               variant='faded'
               fullWidth
-              placeholder="Login"
+              placeholder="Username or email"
               required
               value={login}
               onValueChange={setLogin}
             />
           </div>
           <div className="mb-6" >
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
             <Input
+              id='password'
               isInvalid={inputError}
               color={inputError ? 'danger' : 'primary'}
               errorMessage="Invalid email or password"
@@ -74,15 +82,19 @@ const Login: React.FC = () => {
               }
             />
           </div>
-          <Button type="submit" color="primary"
-            onClick={() => setLoading(true)}>
-            {loading ?
-              <Spinner size="sm" color='default' /> : 'Sign In'}
-          </Button>
+          <div className="flex justify-center">
+            <Button type="submit" color="primary" onClick={() => setLoading(true)}>
+              {loading ? <Spinner size="sm" color='default' /> : 'Sign Up'}
+            </Button>
+          </div>
+          <div className="mt-4 text-center">
+            <span className="text-sm text-gray-600">Don't have an account? </span>
+            <a href="/signup" className="text-sm text-blue-500 hover:underline">Sign Up</a>
+          </div>
         </form>
       </div>
     </div>
   )
 }
 
-export default Login;
+export default SignIn;

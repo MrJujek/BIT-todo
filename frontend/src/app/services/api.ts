@@ -36,13 +36,13 @@ export const patchTodo = async (id: number, checked: boolean) => {
   return response.json();
 };
 
-export const loginUser = async (email: string, password: string) => {
+export const loginUser = async (login: string, password: string) => {
   const response = await fetch(`${API_URL}/users/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ login, password }),
   });
   if (!response.ok) {
     throw new Error(`Error logging in: ${response.statusText}`);

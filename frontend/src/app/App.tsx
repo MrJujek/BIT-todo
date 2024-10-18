@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import TodoList from './pages/TodoList';
-import Login from './pages/Login';
+import SignUp from './pages/SignUp';
+import SignIn from './pages/SignIn';
 import NotFound from './pages/NotFound';
 import { useEffect, useState } from 'react';
 import { Spinner } from '@nextui-org/react'
@@ -31,7 +32,8 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<TodoList />} />
         </Route>
-        <Route path="/login" element={<Login />} />
+        <Route path='/signup' element={<SignUp />} />
+        <Route path="/signin" element={<SignIn />} />
         <Route path="/404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>
