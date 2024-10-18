@@ -3,6 +3,7 @@ import TodoList from './pages/TodoList';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import { useEffect, useState } from 'react';
+import { Spinner } from '@nextui-org/react'
 
 function ProtectedRoute() {
   const [loading, setLoading] = useState(true);
@@ -11,15 +12,15 @@ function ProtectedRoute() {
   useEffect(() => {
     setTimeout(() => {
       setUser('user');
-      setLoading(false);
+      // setLoading(false);
     }, 0)
   }, [])
 
   return (
-    <>
-      {loading ? <div>Loading...</div> :
+    <div className="flex justify-center items-center h-screen">
+      {loading ? <Spinner /> :
         user ? <Outlet /> : <Navigate to="/login" replace />}
-    </>
+    </div>
   )
 }
 
