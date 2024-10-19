@@ -5,22 +5,28 @@ import SignIn from './pages/SignIn';
 import NotFound from './pages/NotFound';
 import { useEffect, useState } from 'react';
 import { Spinner } from '@nextui-org/react'
+import { authUser } from './services/api';
 
 function ProtectedRoute() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      setUser('user');
-      // setLoading(false);
+    setTimeout(async () => {
+      try {
+        const data = await authUser();
+        setUser(data.username);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
     }, 0)
   }, [])
 
   return (
     <div className="flex justify-center items-center h-screen">
       {loading ? <Spinner /> :
-        user ? <Outlet /> : <Navigate to="/login" replace />}
+        user ? <Outlet /> : <Navigate to="/signin" replace />}
     </div>
   )
 }

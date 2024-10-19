@@ -3,6 +3,7 @@ import { Input, Button, Spinner } from '@nextui-org/react'
 import { EyeFilledIcon } from '../assets/EyeFilledIcon'
 import { EyeSlashFilledIcon } from '../assets/EyeSlashFilledIcon'
 import { loginUser } from '../services/api'
+import { useNavigate } from 'react-router-dom';
 
 const SignIn: React.FC = () => {
   const [login, setLogin] = useState<string>('');
@@ -10,8 +11,11 @@ const SignIn: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [inputError, setInputError] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
   const toggleVisibility = () => setIsVisible(!isVisible);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setInputError(false);
@@ -19,17 +23,34 @@ const SignIn: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!login && !password) {
+      setInputError(true);
+      setError('Login and password are required');
+      setLoading(false);
+      return;
+    }
+    if (!login) {
+      setInputError(true);
+      setError('Login is required');
+      setLoading(false);
+      return;
+    }
+    if (!password) {
+      setInputError(true);
+      setError('Password is required');
+      setLoading(false);
+      return;
+    }
 
     try {
       const data = await loginUser(login, password);
+      console.log(data);
 
-      console.log('Login successful:', data);
-
-
-
+      navigate('/');
     } catch (error) {
       setInputError(true);
       setLoading(false);
+      setError('Invalid email or password');
     }
   }
 
@@ -54,7 +75,7 @@ const SignIn: React.FC = () => {
               variant='faded'
               fullWidth
               placeholder="Username or email"
-              required
+              // required
               value={login}
               onValueChange={setLogin}
             />
@@ -67,11 +88,11 @@ const SignIn: React.FC = () => {
               id='password'
               isInvalid={inputError}
               color={inputError ? 'danger' : 'primary'}
-              errorMessage="Invalid email or password"
+              errorMessage={error}
               variant='faded'
               fullWidth
               placeholder="Password"
-              required
+              // required
               value={password}
               onValueChange={setPassword}
               type={isVisible ? "text" : "password"}
@@ -88,7 +109,7 @@ const SignIn: React.FC = () => {
           </div>
           <div className="flex justify-center">
             <Button type="submit" color="primary" onClick={() => setLoading(true)}>
-              {loading ? <Spinner size="sm" color='default' /> : 'Sign Up'}
+              {loading ? <Spinner size="sm" color='default' /> : 'Sign In'}
             </Button>
           </div>
           <div className="mt-4 text-center">

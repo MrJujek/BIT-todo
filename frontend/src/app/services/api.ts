@@ -37,7 +37,7 @@ export const patchTodo = async (id: number, checked: boolean) => {
 };
 
 export const loginUser = async (login: string, password: string) => {
-  const response = await fetch(`${API_URL}/users/login`, {
+  const response = await fetch(`${API_URL}/users/signin`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -60,6 +60,19 @@ export const registerUser = async (username: string, email: string, password: st
   });
   if (!response.ok) {
     throw new Error(`Error creating user: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+export const authUser = async () => {
+  const response = await fetch(`${API_URL}/users/auth`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`Error authenticating user: ${response.statusText}`);
   }
   return response.json();
 }
