@@ -24,10 +24,11 @@ function ProtectedRoute() {
   }, [])
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      {loading ? <Spinner /> :
+    <>
+      {loading ? <div className="flex justify-center items-center h-screen">
+        <Spinner /></div> :
         user ? <Outlet /> : <Navigate to="/signin" replace />}
-    </div>
+    </>
   )
 }
 

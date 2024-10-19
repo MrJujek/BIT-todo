@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchTodos, createTodo, patchTodo } from '../services/api';
 import { Checkbox } from '@nextui-org/react';
 import AddNewTask from '../components/AddNewTask';
+import AppNavbar from '../components/AppNavbar';
 
 interface Todo {
   id: number;
@@ -13,18 +14,18 @@ interface Todo {
 const TodoList: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [task, setTask] = useState<string>('');
-  const currentDate = new Date().toISOString().split('T')[0];
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
 
   useEffect(() => {
-    fetchTodos(currentDate).then(data => {
+    fetchTodos(selectedDate).then(data => {
       setTodos(data);
     }).catch(error => {
       console.error('Error fetching todos:', error);
     });
-  }, [currentDate]);
+  }, [selectedDate]);
 
   const handleAddTodo = () => {
-    createTodo({ date: currentDate, task }).then(data => {
+    createTodo({ date: selectedDate, task }).then(data => {
       setTodos([...todos, data]);
       setTask('');
     }).catch(error => {
@@ -41,27 +42,31 @@ const TodoList: React.FC = () => {
   };
 
   return (
-    <div>
-      <AddNewTask />
-      <input
-        type="text"
-        value={task}
-        onChange={(e) => setTask(e.target.value)}
-      />
-      <button onClick={handleAddTodo}>Add Todo</button>
-      <ul>
-        {todos.map(todo => (
-          <li key={todo.id} style={{ textDecoration: todo.checked ? 'line-through' : 'none' }}>
-            <Checkbox
-              checked={todo.checked}
-              lineThrough
-              onChange={(e) => handleToggleTodo(todo.id, e.target.checked)}
-            >
-              {todo.task}
-            </Checkbox>
-          </li>
-        ))}
-      </ul>
+    <div className="w-full h-screen flex flex-col">
+      <AppNavbar />
+
+      <div className='flex flex-col p-6'>
+        <AddNewTask />
+        {/* <input
+          type="text"
+          value={task}
+          onChange={(e) => setTask(e.target.value)}
+        />
+        <button onClick={handleAddTodo}>Add Todo</button> */}
+        <ul>
+          {todos.map(todo => (
+            <li key={todo.id} style={{ textDecoration: todo.checked ? 'line-through' : 'none' }}>
+              <Checkbox
+                checked={todo.checked}
+                lineThrough
+                onChange={(e) => handleToggleTodo(todo.id, e.target.checked)}
+              >
+                {todo.task}
+              </Checkbox>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
