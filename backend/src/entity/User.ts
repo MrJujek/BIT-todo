@@ -9,7 +9,7 @@ export class User {
   @Column()
   username!: string;
 
-  @Column()
+  @Column({ unique: true })
   email!: string;
 
   @Column()
@@ -19,7 +19,7 @@ export class User {
   todos!: Todo[];
 
   @BeforeInsert()
-  async hashPassword() {
-    this.password = await Bun.password.hash(this.password);
+  hashPassword() {
+    this.password = Bun.password.hashSync(this.password);
   }
 }
