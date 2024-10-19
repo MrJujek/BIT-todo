@@ -61,7 +61,7 @@ export const signinUser = async (req: Request, res: Response): Promise<void> => 
 
       if (user && isMatch) {
         const token = jwt.sign({ id: user.id }, 'secret', { expiresIn: '1d' });
-        res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 });
+        res.cookie('token', token, { httpOnly: false, maxAge: 1000 * 60 * 60 * 24 });
         res.status(200).json(user);
       } else {
         res.status(401).json({ error: 'Invalid email or password' });
@@ -91,6 +91,21 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
       const user = await userRepository.findOne({ where: { id: decoded.id } });
       res.status(200).json(user);
     }
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Unknown error occurred' });
+    }
+  }
+}
+
+export const signoutUser = async (req: Request, res: Response): Promise<void> => {
+  console.log('signoutUser');
+
+  try {
+    res.clearCookie('token');
+    res.status(200).json({ message: 'Logged out' });
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
