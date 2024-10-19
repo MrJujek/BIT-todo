@@ -12,6 +12,7 @@ const SignIn: React.FC = () => {
   const [inputError, setInputError] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [disabledButton, setDisabledButton] = useState<boolean>(true);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -26,6 +27,9 @@ const SignIn: React.FC = () => {
 
   useEffect(() => {
     setInputError(false);
+    if (login && password) {
+      setDisabledButton(false);
+    }
   }, [login, password]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -50,8 +54,7 @@ const SignIn: React.FC = () => {
     }
 
     try {
-      const data = await loginUser(login, password);
-      console.log(data);
+      await loginUser(login, password);
 
       navigate('/');
     } catch (error) {
@@ -115,7 +118,12 @@ const SignIn: React.FC = () => {
             />
           </div>
           <div className="flex justify-center">
-            <Button type="submit" color="primary" onClick={() => setLoading(true)}>
+            <Button
+              type="submit"
+              color="primary"
+              onClick={() => setLoading(true)}
+              isDisabled={disabledButton}
+            >
               {loading ? <Spinner size="sm" color='default' /> : 'Sign In'}
             </Button>
           </div>

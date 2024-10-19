@@ -1,4 +1,4 @@
-const API_URL = '/api';
+const API_URL = "/api";
 
 export const fetchTodos = async (date: string) => {
   const response = await fetch(`${API_URL}/todos/${date}`);
@@ -8,13 +8,13 @@ export const fetchTodos = async (date: string) => {
   return response.json();
 };
 
-export const createTodo = async (todo: { date: string, task: string }) => {
+export const createTodo = async (todo: { date: string; task: string }) => {
   const response = await fetch(`${API_URL}/todos`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(todo)
+    body: JSON.stringify(todo),
   });
   if (!response.ok) {
     throw new Error(`Error creating todo: ${response.statusText}`);
@@ -24,9 +24,9 @@ export const createTodo = async (todo: { date: string, task: string }) => {
 
 export const patchTodo = async (id: number, checked: boolean) => {
   const response = await fetch(`${API_URL}/todos/${id}`, {
-    method: 'PATCH',
+    method: "PATCH",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({ checked }),
   });
@@ -38,9 +38,9 @@ export const patchTodo = async (id: number, checked: boolean) => {
 
 export const loginUser = async (login: string, password: string) => {
   const response = await fetch(`${API_URL}/users/signin`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({ login, password }),
   });
@@ -48,44 +48,52 @@ export const loginUser = async (login: string, password: string) => {
     throw new Error(`Error logging in: ${response.statusText}`);
   }
   return response.json();
-}
+};
 
-export const registerUser = async (username: string, email: string, password: string) => {
+export const registerUser = async (
+  username: string,
+  email: string,
+  password: string
+) => {
   const response = await fetch(`${API_URL}/users`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({ username, email, password }),
   });
-  if (!response.ok) {
-    throw new Error(`Error creating user: ${response.statusText}`);
+  console.log(response);
+
+  if (response.status == 400) {
+    return response.json();
+  } else if (!response.ok) {
+    throw new Error(`Error registering user: ${response.statusText}`);
   }
   return response.json();
-}
+};
 
 export const authUser = async () => {
   const response = await fetch(`${API_URL}/users/auth`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
   if (!response.ok) {
     throw new Error(`Error authenticating user: ${response.statusText}`);
   }
   return response.json();
-}
+};
 
 export const logoutUser = async () => {
   const response = await fetch(`${API_URL}/users/signout`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
   if (!response.ok) {
     throw new Error(`Error logging out: ${response.statusText}`);
   }
   return response.json();
-}
+};

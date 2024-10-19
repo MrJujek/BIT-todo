@@ -9,12 +9,8 @@ const LogoutButton: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    // Add your logout logic here
-    console.log('User logged out');
-
     try {
-      const data = await logoutUser();
-      console.log(data);
+      await logoutUser();
       navigate('/signin');
     } catch (error) {
       console.error('Error logging out:', error);
@@ -32,7 +28,7 @@ const LogoutButton: React.FC = () => {
       </Button>
       <Modal
         isOpen={isOpen}
-        placement='auto'
+        placement='center'
         onOpenChange={onOpenChange}
       >
         <ModalContent>
