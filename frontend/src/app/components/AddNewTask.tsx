@@ -10,16 +10,21 @@ const AddNewTask: React.FC = () => {
   }
 
   return (
-    <div>
-      <form onSubmit={(e) => handleAddTodo(e)} className="flex items-center">
-        <Input isClearable label="Add a task" placeholder='Title' value={TaskContent} onChange={(e) => setTaskContent(e.target.value)}
-          onClear={() => setTaskContent('')}
-          className="mr-2" />
+    <form onSubmit={handleAddTodo} className="flex items-center">
+      <Input
+        isClearable
+        labelPlacement='outside'
+        label="Add a task"
+        placeholder='Title'
+        value={TaskContent}
+        onValueChange={setTaskContent}
+        onClear={() => setTaskContent('')}
+        className="mr-2" />
+      <div className='h-full flex flex-col justify-end'>
         <Button type="submit" color='primary'>Add Todo</Button>
-      </form>
 
-
-    </div>
+      </div>
+    </form>
   );
 };
 

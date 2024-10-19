@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Input, Button, Spinner, user } from '@nextui-org/react';
-import { EyeFilledIcon } from '../assets/EyeFilledIcon'
-import { EyeSlashFilledIcon } from '../assets/EyeSlashFilledIcon'
+import { Input, Button, Spinner, Link } from '@nextui-org/react';
+import { EyeFilledIcon } from '../assets/EyeFilledIcon';
+import { EyeSlashFilledIcon } from '../assets/EyeSlashFilledIcon';
+import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../services/api';
 
 const SignUp: React.FC = () => {
   const [username, setUsername] = useState<string>('');
@@ -15,17 +17,30 @@ const SignUp: React.FC = () => {
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = document.cookie.split('=')[0];
+    if (token == 'token') {
+      navigate('/');
+    }
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Username:', username);
     console.log('Email:', email);
     console.log('Password:', password);
 
-    try {
-      // const data = await loginUser(login, password);
+    if (invalidUsername || invalidPassword) {
+      return;
+    }
 
-      // console.log('Login successful:', data);
-      throw Error
+    try {
+      const data = await registerUser(username, email, password);
+
+      console.log(data);
+
 
 
     } catch (error) {
@@ -43,7 +58,7 @@ const SignUp: React.FC = () => {
   }, [username])
 
   useEffect(() => {
-    if (password.length < 6) {
+    if (password.length < 6 && password.length > 0) {
       setInvalidPassword(true);
     } else {
       setInvalidPassword(false);
@@ -130,7 +145,7 @@ const SignUp: React.FC = () => {
           </div>
           <div className="mt-4 text-center">
             <span className="text-sm text-gray-600">Already have an account? </span>
-            <a href="/signin" className="text-sm text-blue-500 hover:underline">Sign In</a>
+            <Link size='sm' href='/signin' underline='hover'>Sign In</Link>
           </div>
         </form>
       </div>

@@ -76,3 +76,16 @@ export const authUser = async () => {
   }
   return response.json();
 }
+
+export const logoutUser = async () => {
+  const response = await fetch(`${API_URL}/users/signout`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`Error logging out: ${response.statusText}`);
+  }
+  return response.json();
+}

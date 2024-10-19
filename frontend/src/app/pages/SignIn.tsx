@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Input, Button, Spinner } from '@nextui-org/react'
+import { Input, Button, Spinner, Link } from '@nextui-org/react'
 import { EyeFilledIcon } from '../assets/EyeFilledIcon'
 import { EyeSlashFilledIcon } from '../assets/EyeSlashFilledIcon'
 import { loginUser } from '../services/api'
@@ -16,6 +16,13 @@ const SignIn: React.FC = () => {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = document.cookie.split('=')[0];
+    if (token == 'token') {
+      navigate('/');
+    }
+  }, []);
 
   useEffect(() => {
     setInputError(false);
@@ -114,7 +121,7 @@ const SignIn: React.FC = () => {
           </div>
           <div className="mt-4 text-center">
             <span className="text-sm text-gray-600">Don't have an account? </span>
-            <a href="/signup" className="text-sm text-blue-500 hover:underline">Sign Up</a>
+            <Link size='sm' href='/signup' underline='hover'>Sign Up</Link>
           </div>
         </form>
       </div>
