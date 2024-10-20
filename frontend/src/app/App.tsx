@@ -18,6 +18,8 @@ function ProtectedRoute() {
         setUser(data.username);
         setLoading(false);
       } catch (error) {
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
         setLoading(false);
       }
     }, 0)
