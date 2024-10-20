@@ -54,7 +54,7 @@ const TodoList: React.FC = () => {
 
   return (
     <div className="w-full h-screen flex flex-col ">
-      <AppNavbar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
+      <AppNavbar selectedOption={selectedOption} setSelectedOption={setSelectedOption} setSelectedDate={setSelectedDate} />
 
       <div className='flex flex-col p-6 w-full items-center justify-center'>
         <div className='flex flex-col w-full max-w-[976px]'>
@@ -76,7 +76,7 @@ const TodoList: React.FC = () => {
 
           <ul>
             {selectedOption === 'today' && todos.filter(todo => todo.date === selectedDate).map(todo => (
-              <li key={todo.id} style={{ textDecoration: todo.checked ? 'line-through' : 'none' }}>
+              <li key={todo.id}>
                 <Checkbox
                   isSelected={todo.checked}
                   lineThrough
@@ -87,9 +87,20 @@ const TodoList: React.FC = () => {
               </li>
             ))}
             {selectedOption === 'all' && todos.map(todo => (
-              <li key={todo.id} style={{ textDecoration: todo.checked ? 'line-through' : 'none' }}>
+              <li key={todo.id}>
                 <Checkbox
-                  checked={todo.checked}
+                  isSelected={todo.checked}
+                  lineThrough
+                  onChange={(e) => handleToggleTodo(todo.id, e.target.checked)}
+                >
+                  {todo.task}
+                </Checkbox>
+              </li>
+            ))}
+            {selectedOption === 'custom' && todos.filter(todo => todo.date === selectedDate).map(todo => (
+              <li key={todo.id}>
+                <Checkbox
+                  isSelected={todo.checked}
                   lineThrough
                   onChange={(e) => handleToggleTodo(todo.id, e.target.checked)}
                 >

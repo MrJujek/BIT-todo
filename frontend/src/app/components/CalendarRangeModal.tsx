@@ -1,27 +1,33 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Calendar, DateValue } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, RangeCalendar } from "@nextui-org/react";
 import { CalendarDate } from "@internationalized/date";
 
-interface CalendarModalProps {
+interface CalendarRangeModalProps {
   isOpen: boolean;
   onOpenChange: () => void;
   setIsMenuOpen: Dispatch<SetStateAction<boolean>>;
-  calendarDate: DateValue | undefined;
-  setCalendarDate: React.Dispatch<React.SetStateAction<DateValue | undefined>>;
+  calendarDate: {
+    start: CalendarDate;
+    end: CalendarDate;
+  }
+  setCalendarDate: React.Dispatch<React.SetStateAction<{
+    start: CalendarDate;
+    end: CalendarDate;
+  }>>;
 }
 
-const CalendarModal: React.FC<CalendarModalProps> = (props) => {
+const CalendarRangeModal: React.FC<CalendarRangeModalProps> = (props) => {
   const { isOpen, onOpenChange, setIsMenuOpen, calendarDate, setCalendarDate } = props;
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange} >
+    < Modal isOpen={isOpen} onOpenChange={onOpenChange} >
       <ModalContent>
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">Select custom date</ModalHeader>
             <ModalBody>
               <div className="flex justify-center items-center">
-                <Calendar
+                <RangeCalendar
                   aria-label="Date (No Selection)"
                   value={calendarDate}
                   onChange={setCalendarDate}
@@ -47,4 +53,4 @@ const CalendarModal: React.FC<CalendarModalProps> = (props) => {
   )
 }
 
-export default CalendarModal;
+export default CalendarRangeModal;

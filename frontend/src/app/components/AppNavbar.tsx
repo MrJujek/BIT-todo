@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { Navbar, NavbarBrand, NavbarMenuToggle, NavbarMenuItem, NavbarMenu, NavbarContent, NavbarItem, Link, useDisclosure } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarMenuToggle, NavbarMenuItem, NavbarMenu, NavbarContent, NavbarItem, Link, useDisclosure, DateValue } from "@nextui-org/react";
 import LogoutButton from "./LogoutButton";
-import { today, getLocalTimeZone } from "@internationalized/date";
 import CalendarModal from "./CalendarModal";
+import { parseDate } from '@internationalized/date';
 
 interface AppNavbarProps {
   selectedOption: 'today' | 'all' | 'custom';
   setSelectedOption: (option: 'today' | 'all' | 'custom') => void;
+  setSelectedDate: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const AppNavbar: React.FC<AppNavbarProps> = (props) => {
+  const { selectedOption, setSelectedOption, setSelectedDate } = props;
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [calendarDate, setCalendarDate] = useState<DateValue | undefined>(parseDate(new Date().toISOString().split('T')[0]));
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const [calendarDate, setCalendarDate] = useState({
-    start: today(getLocalTimeZone()),
-    end: today(getLocalTimeZone()),
-  });
-
   useEffect(() => {
-    console.log(calendarDate);
+    if (calendarDate) {
+      setSelectedDate(calendarDate.toString());
+    }
   }, [calendarDate]);
-
-  const { selectedOption, setSelectedOption } = props;
 
   return (
     <Navbar
@@ -125,7 +125,10 @@ const AppNavbar: React.FC<AppNavbarProps> = (props) => {
           <Link
             className='hover:cursor-pointer'
             color={selectedOption == 'custom' ? 'primary' : 'foreground'}
-            onClick={onOpen}
+            onClick={() => {
+              onOpen();
+              setSelectedOption('custom');
+            }}
             size="lg"
           >
             Custom
