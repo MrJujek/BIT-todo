@@ -1,13 +1,16 @@
 import React from "react";
-import { Navbar, NavbarBrand, NavbarMenuToggle, NavbarMenuItem, NavbarMenu, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, Avatar, DropdownItem, DropdownMenu } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarMenuToggle, NavbarMenuItem, NavbarMenu, NavbarContent, NavbarItem, Link } from "@nextui-org/react";
 import LogoutButton from "./LogoutButton";
 
-const AppNavbar: React.FC = () => {
+interface AppNavbarProps {
+  selectedOption: 'today' | 'all' | 'custom';
+  setSelectedOption: (option: 'today' | 'all' | 'custom') => void;
+}
+
+const AppNavbar: React.FC<AppNavbarProps> = (props) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-  const menuItems = [
-    "Log Out",
-  ];
+  const { selectedOption, setSelectedOption } = props;
 
   return (
     <Navbar
@@ -35,19 +38,31 @@ const AppNavbar: React.FC = () => {
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Features
+        <NavbarItem className="px-2" isActive={selectedOption == 'today'}>
+          <Link
+            className='hover:cursor-pointer'
+            color={selectedOption == 'today' ? 'primary' : 'foreground'}
+            onClick={() => setSelectedOption('today')}
+          >
+            Today tasks
           </Link>
         </NavbarItem>
-        <NavbarItem isActive>
-          <Link href="#" aria-current="page">
-            Customers
+        <NavbarItem className="px-2" isActive={selectedOption == 'all'}>
+          <Link
+            className='hover:cursor-pointer'
+            color={selectedOption == 'all' ? 'primary' : 'foreground'}
+            onClick={() => setSelectedOption('all')}
+          >
+            All tasks
           </Link>
         </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Integrations
+        <NavbarItem className="px-2" isActive={selectedOption == 'custom'}>
+          <Link
+            className='hover:cursor-pointer'
+            color={selectedOption == 'custom' ? 'primary' : 'foreground'}
+            onClick={() => setSelectedOption('custom')}
+          >
+            Custom
           </Link>
         </NavbarItem>
       </NavbarContent>
@@ -57,23 +72,41 @@ const AppNavbar: React.FC = () => {
           <LogoutButton />
         </NavbarItem>
       </NavbarContent>
-      
 
       <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              className="w-full"
-              color={
-                index === 2 ? "warning" : index === menuItems.length - 1 ? "danger" : "foreground"
-              }
-              href="#"
-              size="lg"
-            >
-              {item}
-            </Link>
-          </NavbarMenuItem>
-        ))}
+        <NavbarMenuItem className="w-full" isActive={selectedOption == 'today'}>
+          <Link
+            className='hover:cursor-pointer'
+            color={selectedOption == 'today' ? 'primary' : 'foreground'}
+            onClick={() => setSelectedOption('today')}
+            size="lg"
+          >
+            Today tasks
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem className="w-full" isActive={selectedOption == 'all'}>
+          <Link
+            className='hover:cursor-pointer'
+            color={selectedOption == 'all' ? 'primary' : 'foreground'}
+            onClick={() => setSelectedOption('all')}
+            size="lg"
+          >
+            All tasks
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem className="w-full" isActive={selectedOption == 'custom'}>
+          <Link
+            className='hover:cursor-pointer'
+            color={selectedOption == 'custom' ? 'primary' : 'foreground'}
+            onClick={() => setSelectedOption('custom')}
+            size="lg"
+          >
+            Custom
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem key='hamburger4'>
+          <LogoutButton />
+        </NavbarMenuItem>
       </NavbarMenu>
     </Navbar>
   );

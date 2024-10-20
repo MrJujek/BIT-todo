@@ -48,9 +48,9 @@ const SignUp: React.FC = () => {
       const data = await registerUser(username, email, password);
 
       if (data.error) {
-        if (data.error.includes('username')) {
+        if (data.error.includes('Username')) {
           setUsernameTaken(true);
-        } else if (data.error.includes('email')) {
+        } else if (data.error.includes('Email')) {
           setEmailTaken(true);
         }
         setLoading(false);

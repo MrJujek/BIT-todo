@@ -13,8 +13,8 @@ interface Todo {
 
 const TodoList: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [task, setTask] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [selectedOption, setSelectedOption] = useState<'today' | 'all' | 'custom'>('today');
 
   useEffect(() => {
     fetchTodos(selectedDate).then(data => {
@@ -24,10 +24,9 @@ const TodoList: React.FC = () => {
     });
   }, [selectedDate]);
 
-  const handleAddTodo = () => {
-    createTodo({ date: selectedDate, task }).then(data => {
-      setTodos([...todos, data]);
-      setTask('');
+  const handleAddTodo = (TaskContent: string) => {
+    createTodo({ date: selectedDate, task: TaskContent }).then(data => {
+      setTodos([data, ...todos]);
     }).catch(error => {
       console.error('Error creating todo:', error);
     });
@@ -43,16 +42,19 @@ const TodoList: React.FC = () => {
 
   return (
     <div className="w-full h-screen flex flex-col">
-      <AppNavbar />
+      <AppNavbar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
 
       <div className='flex flex-col p-6'>
-        <AddNewTask />
-        {/* <input
-          type="text"
-          value={task}
-          onChange={(e) => setTask(e.target.value)}
-        />
-        <button onClick={handleAddTodo}>Add Todo</button> */}
+        <div className='w-full flex items-center justify-center'>
+          <span style={{ fontWeight: 'bold', fontSize: '24px' }}>
+            {selectedOption === 'today'
+              ? 'Today tasks' : selectedOption === 'all'
+                ? 'All tasks' : `Tasks from ${selectedDate}`}
+          </span>
+        </div>
+
+        <AddNewTask handleAddTodo={handleAddTodo} />
+
         <ul>
           {todos.map(todo => (
             <li key={todo.id} style={{ textDecoration: todo.checked ? 'line-through' : 'none' }}>
@@ -67,7 +69,7 @@ const TodoList: React.FC = () => {
           ))}
         </ul>
       </div>
-    </div>
+    </div >
   );
 };
 

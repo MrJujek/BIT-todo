@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import { Button, Input } from '@nextui-org/react';
 
-const AddNewTask: React.FC = () => {
+interface AddNewTaskProps {
+  handleAddTodo: (taskContent: string) => void;
+}
+
+const AddNewTask: React.FC<AddNewTaskProps> = (prop) => {
   const [TaskContent, setTaskContent] = useState<string>('');
 
-  const handleAddTodo = (e: React.FormEvent<HTMLFormElement>) => {
+  const { handleAddTodo } = prop;
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    handleAddTodo(TaskContent);
     setTaskContent('');
-  }
+  };
 
   return (
-    <form onSubmit={handleAddTodo} className="flex items-center">
+    <form onSubmit={handleSubmit} className="flex items-center">
       <Input
         isClearable
         labelPlacement='outside'
@@ -21,8 +28,7 @@ const AddNewTask: React.FC = () => {
         onClear={() => setTaskContent('')}
         className="mr-2" />
       <div className='h-full flex flex-col justify-end'>
-        <Button type="submit" color='primary'>Add Todo</Button>
-
+        <Button type="submit" color='primary' isDisabled={TaskContent.trim().length > 0 ? false : true}>Add Todo</Button>
       </div>
     </form>
   );
