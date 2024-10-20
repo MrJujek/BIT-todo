@@ -17,8 +17,10 @@ const TodoList: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<'today' | 'all' | 'custom'>('today');
 
   useEffect(() => {
-    if (selectedOption === 'today' || selectedOption === 'all') {
+    if (selectedOption === 'today') {
       setSelectedDate(new Date().toISOString().split('T')[0]);
+    } else if (selectedOption === 'all') {
+      setSelectedDate('all');
     }
   }, [selectedOption]);
 
@@ -26,8 +28,6 @@ const TodoList: React.FC = () => {
     fetchTodos(selectedDate).then(data => {
       setTodos(data);
     }).catch(() => {
-      console.log("No todos found");
-
       setTodos([]);
     });
   }, [selectedDate]);
