@@ -26,7 +26,8 @@ const AddNewTask: React.FC<AddNewTaskProps> = (prop) => {
         value={TaskContent}
         onValueChange={setTaskContent}
         onClear={() => setTaskContent('')}
-        className="mr-2" />
+        className="mr-2"
+      />
       <div className='h-full flex flex-col justify-end'>
         <Button type="submit" color='primary' isDisabled={TaskContent.trim().length > 0 ? false : true}>Add Todo</Button>
       </div>

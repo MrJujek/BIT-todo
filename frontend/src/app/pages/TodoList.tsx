@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchTodos, createTodo, patchTodo, deleteTodo } from '../services/api';
+import { fetchTodos, createTodo, patchTodo, deleteTodo, changeTodo } from '../services/api';
 import AddNewTask from '../components/AddNewTask';
 import AppNavbar from '../components/AppNavbar';
 import Task from '../components/Task';
@@ -60,6 +60,14 @@ const TodoList: React.FC = () => {
     });
   }
 
+  const handleEditTodo = (id: number, task: string) => {
+    changeTodo(id, task).then(data => {
+      setTodos(todos.map(todo => (todo.id === id ? data : todo)));
+    }).catch(error => {
+      console.error('Error updating todo:', error);
+    });
+  }
+
   return (
     <div className="w-full h-screen flex flex-col ">
       <AppNavbar selectedOption={selectedOption} setSelectedOption={setSelectedOption} setSelectedDate={setSelectedDate} />
@@ -82,15 +90,33 @@ const TodoList: React.FC = () => {
             </div>
           )}
 
-          <ul className='p-8'>
+          <ul className='pt-8'>
             {selectedOption === 'today' && todos.filter(todo => todo.date === selectedDate).map(todo => (
-              <Task key={todo.id} todo={todo} handleToggleTodo={handleToggleTodo} handleDeleteTodo={handleDeleteTodo} />
+              <Task
+                key={todo.id}
+                todo={todo}
+                handleToggleTodo={handleToggleTodo}
+                handleDeleteTodo={handleDeleteTodo}
+                handleEditTodo={handleEditTodo}
+              />
             ))}
             {selectedOption === 'all' && todos.map(todo => (
-              <Task key={todo.id} todo={todo} handleToggleTodo={handleToggleTodo} handleDeleteTodo={handleDeleteTodo} />
+              <Task
+                key={todo.id}
+                todo={todo}
+                handleToggleTodo={handleToggleTodo}
+                handleDeleteTodo={handleDeleteTodo}
+                handleEditTodo={handleEditTodo}
+              />
             ))}
             {selectedOption === 'custom' && todos.filter(todo => todo.date === selectedDate).map(todo => (
-              <Task key={todo.id} todo={todo} handleToggleTodo={handleToggleTodo} handleDeleteTodo={handleDeleteTodo} />
+              <Task
+                key={todo.id}
+                todo={todo}
+                handleToggleTodo={handleToggleTodo}
+                handleDeleteTodo={handleDeleteTodo}
+                handleEditTodo={handleEditTodo}
+              />
             ))}
           </ul>
         </div>
