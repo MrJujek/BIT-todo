@@ -97,3 +97,16 @@ export const logoutUser = async () => {
   }
   return response.json();
 };
+
+export const deleteTodo = async (id: number) => {
+  const response = await fetch(`${API_URL}/todos/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`Error deleting todo: ${response.statusText}`);
+  }
+  return response.json();
+}

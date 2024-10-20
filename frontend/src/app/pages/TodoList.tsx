@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { fetchTodos, createTodo, patchTodo } from '../services/api';
-import { Checkbox } from '@nextui-org/react';
+import { fetchTodos, createTodo, patchTodo, deleteTodo } from '../services/api';
 import AddNewTask from '../components/AddNewTask';
 import AppNavbar from '../components/AppNavbar';
+import Task from '../components/Task';
 
 interface Todo {
   id: number;
@@ -25,7 +25,7 @@ const TodoList: React.FC = () => {
   useEffect(() => {
     fetchTodos(selectedDate).then(data => {
       setTodos(data);
-    }).catch(error => {
+    }).catch(() => {
       console.log("No todos found");
 
       setTodos([]);
@@ -52,6 +52,14 @@ const TodoList: React.FC = () => {
     });
   };
 
+  const handleDeleteTodo = (id: number) => {
+    deleteTodo(id).then(() => {
+      setTodos(todos.filter(todo => todo.id !== id));
+    }).catch(error => {
+      console.error('Error deleting todo:', error);
+    });
+  }
+
   return (
     <div className="w-full h-screen flex flex-col ">
       <AppNavbar selectedOption={selectedOption} setSelectedOption={setSelectedOption} setSelectedDate={setSelectedDate} />
@@ -74,39 +82,15 @@ const TodoList: React.FC = () => {
             </div>
           )}
 
-          <ul>
+          <ul className='p-8'>
             {selectedOption === 'today' && todos.filter(todo => todo.date === selectedDate).map(todo => (
-              <li key={todo.id}>
-                <Checkbox
-                  isSelected={todo.checked}
-                  lineThrough
-                  onChange={(e) => handleToggleTodo(todo.id, e.target.checked)}
-                >
-                  {todo.task}
-                </Checkbox>
-              </li>
+              <Task key={todo.id} todo={todo} handleToggleTodo={handleToggleTodo} handleDeleteTodo={handleDeleteTodo} />
             ))}
             {selectedOption === 'all' && todos.map(todo => (
-              <li key={todo.id}>
-                <Checkbox
-                  isSelected={todo.checked}
-                  lineThrough
-                  onChange={(e) => handleToggleTodo(todo.id, e.target.checked)}
-                >
-                  {todo.task}
-                </Checkbox>
-              </li>
+              <Task key={todo.id} todo={todo} handleToggleTodo={handleToggleTodo} handleDeleteTodo={handleDeleteTodo} />
             ))}
             {selectedOption === 'custom' && todos.filter(todo => todo.date === selectedDate).map(todo => (
-              <li key={todo.id}>
-                <Checkbox
-                  isSelected={todo.checked}
-                  lineThrough
-                  onChange={(e) => handleToggleTodo(todo.id, e.target.checked)}
-                >
-                  {todo.task}
-                </Checkbox>
-              </li>
+              <Task key={todo.id} todo={todo} handleToggleTodo={handleToggleTodo} handleDeleteTodo={handleDeleteTodo} />
             ))}
           </ul>
         </div>

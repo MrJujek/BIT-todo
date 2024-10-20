@@ -1,6 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Calendar, DateValue } from "@nextui-org/react";
-import { CalendarDate } from "@internationalized/date";
 
 interface CalendarModalProps {
   isOpen: boolean;
