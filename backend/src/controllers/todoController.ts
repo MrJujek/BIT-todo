@@ -102,16 +102,73 @@ export const patchTodo = async (req: Request, res: Response): Promise<void> => {
   try {
     const todoRepository = AppDataSource.getRepository(Todo);
     const { id } = req.params;
-    const { checked } = req.body;
+    const { checked, task } = req.body;
+
+    console.log(req.body);
+    console.log(checked, task);
 
     const todo = await todoRepository.findOneBy({ id: Number(id) });
-    if (todo) {
-      todo.checked = checked;
-      const result = await todoRepository.save(todo);
-      res.status(200).json(result);
-    } else {
+    if (!todo) {
       res.status(404).json({ message: "Todo not found" });
+      return;
     }
+
+    if (task) todo.task = task;
+    if (checked == false || checked) todo.checked = checked;
+
+    const result = await todoRepository.save(todo);
+    res.status(200).json(result);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Unknown error occurred" });
+    }
+  }
+};
+
+export const deleteTodo = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  console.log("deleteTodo");
+
+  try {
+    const token = req.headers.cookie?.split("=")[1];
+
+    if (!token) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+
+    const decoded = jwt.verify(token, "secret") as {
+      id: number;
+      iat: number;
+      exp: number;
+    };
+    const userRepository = AppDataSource.getRepository(User);
+    const user = await userRepository.findOne({ where: { id: decoded.id } });
+
+    if (!user) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+
+    const todoRepository = AppDataSource.getRepository(Todo);
+    const { id } = req.params;
+
+    const todo = await todoRepository.findOne({
+      where: { id: Number(id), user: user },
+    });
+
+    if (!todo) {
+      res.status(404).json({ message: "Todo not found" });
+      return;
+    }
+
+    await todoRepository.remove(todo);
+
+    res.status(200).json({ message: "Todo deleted successfully" });
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
