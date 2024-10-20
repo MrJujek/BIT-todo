@@ -17,6 +17,17 @@ export class CreateUserData {
   password!: string;
 }
 
+class SigninUserData {
+  @IsNotEmpty({ message: "Login is required" })
+  login!: string;
+
+  @Matches(/^.{6,}$/, {
+    message: "Password must be at least 6 characters long",
+  })
+  @IsNotEmpty({ message: "Password is required" })
+  password!: string;
+}
+
 export const createUser = async (
   req: Request,
   res: Response
@@ -95,32 +106,36 @@ export const signinUser = async (
     const userRepository = AppDataSource.getRepository(User);
     const { login, password } = req.body;
 
-    if (!login || !password) {
-      res.status(401).json({ error: "Invalid email or password" });
+    let data = new SigninUserData();
+    data.login = login;
+    data.password = password;
+
+    const errors = await validate(data);
+
+    if (errors.length > 0) {
+      res.status(400).json(errors);
+      return;
+    }
+
+    let user: User | null;
+
+    if (typeof login == "string" && login.includes("@")) {
+      user = await userRepository.findOne({ where: { email: login } });
     } else {
-      let user: User | null;
+      user = await userRepository.findOne({ where: { username: login } });
+    }
 
-      if (typeof login == "string" && login.includes("@")) {
-        user = await userRepository.findOne({ where: { email: login } });
-      } else {
-        user = await userRepository.findOne({ where: { username: login } });
-      }
+    const isMatch = Bun.password.verifySync(password, user?.password || "");
 
-      const isMatch = Bun.password.verifySync(password, user?.password || "");
-      console.log(isMatch);
-
-      console.log(user);
-
-      if (user && isMatch) {
-        const token = jwt.sign({ id: user.id }, "secret", { expiresIn: "1d" });
-        res.cookie("token", token, {
-          httpOnly: false,
-          maxAge: 1000 * 60 * 60 * 24,
-        });
-        res.status(200).json(user);
-      } else {
-        res.status(401).json({ error: "Invalid email or password" });
-      }
+    if (user && isMatch) {
+      const token = jwt.sign({ id: user.id }, "secret", { expiresIn: "1d" });
+      res.cookie("token", token, {
+        httpOnly: false,
+        maxAge: 1000 * 60 * 60 * 24,
+      });
+      res.status(200).json(user);
+    } else {
+      res.status(401).json({ error: "Invalid email or password" });
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -136,7 +151,6 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
 
   try {
     const token = req.headers.cookie?.split("=")[1];
-    console.log(token);
 
     if (!token) {
       res.status(401).json({ error: "Unauthorized" });
@@ -148,9 +162,16 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
       };
       const userRepository = AppDataSource.getRepository(User);
       const user = await userRepository.findOne({ where: { id: decoded.id } });
+      if (!user) {
+        res.status(401).json({ error: "Unauthorized" });
+        return;
+      }
+
       res.status(200).json(user);
     }
   } catch (error) {
+    res.clearCookie("token");
+
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
     } else {
